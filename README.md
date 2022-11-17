@@ -24,8 +24,17 @@ https://www.a-mean-blog.com/ko/blog/Node-JS-%EC%B2%AB%EA%B1%B8%EC%9D%8C/%EC%A3%B
 
 ## 설치된 npm 패키지
 
-2022-11-17 
-``
-npm install --global nodemon express mongoose ejs
+```
+npm install --save ejs express mongoose
+npm install --global nodemon
+npm install --save body-parser
+
+```
 
 ## npm 모듈 관리를 위한 고민 필요
+
+
+## mongo DB
+- id : test
+- pw : test
+https://cloud.mongodb.com/

@@ -1,11 +1,9 @@
-h1 {
-    color : tomato
-}
+/* public/css/master.css */
 
-.stranger {
-    color : orange
+.contact h2{
+    color:tomato;
 }
-
-.name {
-    color : cornflowerblue
+.contact .contact-form label{
+    display: inline-block;
+    width: 70px;
 }
