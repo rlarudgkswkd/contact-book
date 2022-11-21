@@ -16,7 +16,8 @@ let app = express();
 //mongoose.connect(process.env.MONGO_DB);
 
 //connect String 사용
-mongoose.connect('mongodb+srv://test:test@cluster0.948icol.mongodb.net/?retryWrites=true&w=majority');
+//mongoose.connect('mongodb+srv://test:test@cluster0.948icol.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect('mongodb://test:test@cluster0.948icol.mongodb.net/?retryWrites=true&w=majority');
 let db = mongoose.connection;
 
 //DB 연결시 CONSOLE
