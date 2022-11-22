@@ -16,7 +16,7 @@ let app = express();
 //mongoose.connect(process.env.MONGO_DB);
 
 //connect String 사용
-mongoose.connect('mongodb+srv://test:test@cluster0.948icol.mongodb.net/?retryWrites=true&w=majority');
+mongoose.connect('mongodb+srv://root:root@cluster0.948icol.mongodb.net/?retryWrites=true&w=majority');
 //mongoose.connect('mongodb://test:test@cluster0.948icol.mongodb.net/?retryWrites=true&w=majority');
 let db = mongoose.connection;
 
@@ -40,7 +40,10 @@ db.on('error', function(err){
 app.set('view engine', 'ejs');
 
 //정적 요소 경로 세팅
-app.use(express.static(__dirname + '/public'));
+let path = require('path');
+app.set('views', __dirname + '/views'); 
+app.use(express.static(path.join(__dirname, '/public')));
+
 
 //bodyParser Setting
 app.use(bodyParser.json()); //json 형식으로 데이터 받기
@@ -79,7 +82,8 @@ app.get('/contacts', function(req,res) {
 
 //Contacts - New
 app.get('/contacts/new',function(req,res){
-    res.render('/contacts/new');
+    //2022-11-22 여기 경로 /contacts/test로 작성해서 경로 못찾는 오류 발생했었음. 주의
+    res.render('contacts/test');
 });
 
 //Contacts - create
