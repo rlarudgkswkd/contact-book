@@ -29,6 +29,9 @@ npm install --save ejs express mongoose
 npm install --global nodemon
 npm install --save body-parser
 
+//Query로 method 값을 받아서 request의 HTTP Method 를 바꿔주는 역할
+npm install --save method-override
+
 ```
 
 ## npm 모듈 관리를 위한 고민 필요
