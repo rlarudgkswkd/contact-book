@@ -101,7 +101,9 @@ app.post('/contacts',function(req,res){
 });
 
 //Contacts - show
+// '/contacts/:id' 를 하게 되면 /contacts/abcd1234가 입력될때 route에서 해당 경로를 받아 req.params.id 에 'abcd1234'가 입력
 app.get('/contacts/:id',function(req,res){
+    //findOne 은 첫번째 params로 찾는 함수
     Contact.findOne({_id:req.params.id}, function (err, contact){
         if(err) return res.json(err);
         res.render('contacts/show', {contact:contact});
@@ -118,7 +120,8 @@ app.get('/contacts/:id/edit',function(req, res){
 
 //Contacts - update
 app.put('/contacts/:id',function(req,res){
-    Contact.findOneAndUpdate({_id:req.params.id}, req.body, function(err, contact){
+    //callback함수로 넘겨지는 값은 수정되기 전의 값입니다. 만약 업데이트 된 후의 값을 보고 싶다면 콜백 함수 전에 parameter로 {new:true}를 넣어주면 됩니다.
+    Contact.findOneAndUpdate({_id:req.params.id}, req.body, {new:true} , function(err, contact){
         if(err) return res.json(err);
         res.redirect('/contacts/'+req.params.id);
     });
