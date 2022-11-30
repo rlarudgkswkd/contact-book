@@ -11,8 +11,6 @@ let bodyParser = require('body-parser');
 let methodOverride = require('method-override');
 let app = express();
 
-
-
 //---------------------
 // DB setting 시작
 //---------------------
@@ -45,6 +43,7 @@ app.set('view engine', 'ejs');
 
 //정적 요소 경로 세팅
 let path = require('path');
+const { allowedNodeEnvironmentFlags } = require('process');
 app.set('views', __dirname + '/views'); 
 app.use(express.static(path.join(__dirname, '/public')));
 
@@ -55,85 +54,17 @@ app.use(bodyParser.urlencoded({extended : true})); //urlencoded data를 extended
 //method override setting
 app.use(methodOverride('_method'));
 
-// DB Schema
-let contactSchema = mongoose.Schema({
-    name : {type:String, required: true, unique:true},
-    email : {type:String},
-    phone : {type:String}
-});
-
-//DB에 있는 'contact'라는 컬렉션을 Contact 변수에 연결 시켜주는 역할
-let Contact = mongoose.model('contact',contactSchema);
-
 //---------------------
 // Route 세팅 시작
 //---------------------
 
-// Home
-app.get('/',function(req,res){
-    res.redirect('/contacts');
-});
+//routes 관련 설정 별도 관리 하기 위해 설정
+//app.use 는 해당 route에 요청이 오는 경우에만 콜백 함수를 호출함.
+app.use('/', require('./routes/home'));
 
-//Contacts - Index
-//ERR 가 있으면 json 형태로 페이지에 표시하고, 에러가 없다면 render함(페이지를 Dynamic 하게 제작)
-app.get('/contacts', function(req,res) {
-
-    //모델.find(검색조건, callback_함수) -> {}로 보내면 모든 DATA조회 , {lastName:"Kim"}이면 Kim인 모델들을 찾음.
-    //Callback 함수 는 err, contacts를 전달. contacts는 항상 array 형태
-    Contact.find({}, function(err,contacts){
-        if(err) return res.json(err);
-        res.render('contacts/index',{contacts:contacts});
-    });
-});
-
-//Contacts - New
-app.get('/contacts/new',function(req,res){
-    //2022-11-22 여기 경로 /contacts/test로 작성해서 경로 못찾는 오류 발생했었음. 주의
-    res.render('contacts/new');
-});
-
-//Contacts - create
-app.post('/contacts',function(req,res){
-    Contact.create(req.body, function(err, contact){
-        if(err) return res.json(err);
-        res.redirect('/contacts');
-    });
-});
-
-//Contacts - show
-// '/contacts/:id' 를 하게 되면 /contacts/abcd1234가 입력될때 route에서 해당 경로를 받아 req.params.id 에 'abcd1234'가 입력
-app.get('/contacts/:id',function(req,res){
-    //findOne 은 첫번째 params로 찾는 함수
-    Contact.findOne({_id:req.params.id}, function (err, contact){
-        if(err) return res.json(err);
-        res.render('contacts/show', {contact:contact});
-    });
-});
-
-//Contacts - edit
-app.get('/contacts/:id/edit',function(req, res){
-    Contact.findOne({_id:req.params.id}, function(err, contact){
-        if(err) return res.json(err);
-        res.render('contacts/edit',{contact:contact});
-    });
-});
-
-//Contacts - update
-app.put('/contacts/:id',function(req,res){
-    //callback함수로 넘겨지는 값은 수정되기 전의 값입니다. 만약 업데이트 된 후의 값을 보고 싶다면 콜백 함수 전에 parameter로 {new:true}를 넣어주면 됩니다.
-    Contact.findOneAndUpdate({_id:req.params.id}, req.body, {new:true} , function(err, contact){
-        if(err) return res.json(err);
-        res.redirect('/contacts/'+req.params.id);
-    });
-});
-
-//Contacts - destroy
-app.delete('/contacts/:id', function(req,res){ 
-    Contact.deleteOne({_id:req.params.id}, function(err){
-        if(err) return res.json(err);
-        res.redirect('/contacts');
-    });
-});
+//router 들이 예를들어 destroy 경우 /contacts/:id 에서 /:id 로 바뀐 이유
+//  '/contacts'로 들어와야 router가 작동함.
+app.use('/contacts', require('./routes/contacts'));
 
 //Port Setting
 let port = 3000;
